@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Antonio"; font-weight: 200; src: url("assets/fonts/antonio-200.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 500; src: url("assets/fonts/barlow-condensed-500.woff2") format("woff2"); }
+        #history-root { position: absolute; inset: 0; overflow: hidden; background: #0f0c0b; font-family: Inter, sans-serif; }
+        .h-panel { position: absolute; left: 0; right: 0; top: 0; height: 400px; overflow: hidden; background: #0000f2; color: #f2f2f2; }
+        .h-panel .dither { position: absolute; inset: 0; background: url("assets/page-dither.png") 50% 50% / cover no-repeat; image-rendering: pixelated; }
+        .h-panel .row { position: absolute; left: 72px; right: 72px; top: 44px; display: flex; justify-content: space-between; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+        .h-panel .big { position: absolute; left: 64px; top: 128px; display: flex; align-items: baseline; gap: 34px; font: 200 188px/.9 Antonio, sans-serif; letter-spacing: -4px; }
+        .h-panel .big small { font: 500 34px "Barlow Condensed", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+        .h-list { position: absolute; left: 72px; right: 72px; top: 440px; }
+        .h-head { display: flex; justify-content: space-between; padding: 0 6px 14px; border-bottom: 1px solid #2a2220; color: #a39a93; font: 500 22px "Barlow Condensed", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+        .h-row { display: grid; grid-template-columns: 100px 170px 250px 130px minmax(0, 1fr); gap: 20px; align-items: center; height: 82px; padding: 0 6px; border-bottom: 1px solid #2a2220; color: #cfc6bf; font: 400 27px Inter, sans-serif; }
+        .h-row .no, .h-row .gap { color: #a39a93; font: 400 24px "IBM Plex Mono", monospace; }
+        .h-row .tag { justify-self: start; padding: 3px 12px; border: 1.5px solid currentColor; font: 500 22px "Barlow Condensed", sans-serif; letter-spacing: 2px; text-transform: uppercase; color: #cfc6bf; }
+        .h-row .tag.banked { color: #f0925a; }
+        .h-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      </style>
+
+      <div data-hf-id="hf-c2n0" id="history-root" data-composition-id="history" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-h04l" class="h-panel">
+          <div data-hf-id="hf-qr34" class="dither"></div>
+          <div data-hf-id="hf-thy4" class="row"><span data-hf-id="hf-9kjj">Codex / Resets</span><span data-hf-id="hf-5q3w">Avg every 7 days</span></div>
+          <div data-hf-id="hf-vf1u" class="big"><span data-hf-id="hf-pgwx" id="h-count">54</span><small data-hf-id="hf-p6ti">resets and counting</small></div>
+        </div>
+        <div data-hf-id="hf-cg11" class="h-list">
+          <div data-hf-id="hf-2enj" class="h-head"><span data-hf-id="hf-ezhf">History</span><span data-hf-id="hf-272s">Each row opens the post</span></div>
+          <div data-hf-id="hf-gepr" class="h-row"><span data-hf-id="hf-iq99" class="no">054</span><span data-hf-id="hf-sac3" class="tag banked">Banked</span><span data-hf-id="hf-yue2">22 Sept, 20:23</span><span data-hf-id="hf-mkct" class="gap">+10.4d</span><span data-hf-id="hf-fn6a" class="txt">We are loading a banked reset into all accounts of our Plus…</span></div>
+          <div data-hf-id="hf-ob5r" class="h-row"><span data-hf-id="hf-lieg" class="no">053</span><span data-hf-id="hf-9iqh" class="tag">Regular</span><span data-hf-id="hf-4348">12 Sept, 10:09</span><span data-hf-id="hf-zaft" class="gap">+4.3d</span><span data-hf-id="hf-7hdw" class="txt">Reset all propagated.</span></div>
+          <div data-hf-id="hf-nwuq" class="h-row"><span data-hf-id="hf-l43f" class="no">052</span><span data-hf-id="hf-rkdp" class="tag">Regular</span><span data-hf-id="hf-2sal">8 Sept, 03:56</span><span data-hf-id="hf-703k" class="gap">+3.1d</span><span data-hf-id="hf-zeqf" class="txt">All reset for everyone.</span></div>
+          <div data-hf-id="hf-nijp" class="h-row"><span data-hf-id="hf-kpse" class="no">051</span><span data-hf-id="hf-7zcj" class="tag banked">Banked</span><span data-hf-id="hf-8vjo">5 Sept, 02:39</span><span data-hf-id="hf-shru" class="gap">+1.1d</span><span data-hf-id="hf-fvhx" class="txt">Because we are beyond happy to have Astra rolled out today…</span></div>
+          <div data-hf-id="hf-qaow" class="h-row"><span data-hf-id="hf-kbhd" class="no">050</span><span data-hf-id="hf-7l1i" class="tag banked">Banked</span><span data-hf-id="hf-pd3v">4 Sept, 01:12</span><span data-hf-id="hf-97lk" class="gap">+3.9d</span><span data-hf-id="hf-4b45" class="txt">We will give one banked reset for every day without Astra…</span></div>
+          <div data-hf-id="hf-pwdv" class="h-row"><span data-hf-id="hf-176b" class="no">049</span><span data-hf-id="hf-sras" class="tag">Regular</span><span data-hf-id="hf-z9oh">31 Aug, 04:29</span><span data-hf-id="hf-boc9" class="gap">+1.2d</span><span data-hf-id="hf-uyyg" class="txt">…we hit 25M active users and to celebrate we have now reset…</span></div>
+          <div data-hf-id="hf-pi2u" class="h-row"><span data-hf-id="hf-1lhc" class="no">048</span><span data-hf-id="hf-sczr" class="tag">Regular</span><span data-hf-id="hf-wqhe">29 Aug, 22:43</span><span data-hf-id="hf-0l06" class="gap">+2.2d</span><span data-hf-id="hf-84dq" class="txt">We are reseting usage for all paid users of Codex and…</span></div>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          const count = { v: 0 };
+          const el = document.querySelector("#h-count");
+          tl.fromTo(count, { v: 0 }, { v: 54, duration: 0.8, ease: "power2.out", onUpdate: () => { el.textContent = Math.round(count.v); } }, 0.25);
+          tl.fromTo(".h-row", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.07 }, 0.3);
+          tl.fromTo("#history-root .h-panel .dither", { scale: 1 }, { scale: 1.05, duration: 2.9, ease: "sine.inOut" }, 0);
+          window.__timelines["history"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

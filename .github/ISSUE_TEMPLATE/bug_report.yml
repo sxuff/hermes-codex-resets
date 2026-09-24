@@ -1,0 +1,39 @@
+name: Bug report
+description: Something in the chip, card, or history page doesn't work as described.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead. A screenshot helps.
+    validations:
+      required: true
+  - type: input
+    id: hermes
+    attributes:
+      label: Hermes desktop version
+      placeholder: "0.21.3"
+    validations:
+      required: true
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin version
+      description: From Capabilities → Plugins, or the release you installed.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [Windows, macOS, Linux]
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines
+      description: Lines mentioning `hermes-codex-resets` from `$HERMES_HOME/logs/desktop.log`, if any.
+      render: text

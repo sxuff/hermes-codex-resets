@@ -1,0 +1,16 @@
+name: hermes-codex-resets
+version: 0.1.0 # x-release-please-version
+manifest_version: 1
+kind: standalone
+requires_hermes: ">=0.21"
+description: >-
+  Codex usage-limit resets in the Hermes Desktop status bar. A chip counts the
+  time since OpenAI last reset Codex limits; when a new reset is announced, a
+  small card rises out of it. Desktop UI only: no tools, hooks, or Python code.
+  Reads the public codex-resets.com API.
+author: sxuff
+license: MIT
+homepage: https://github.com/sxuff/hermes-codex-resets
+capabilities: []
+requires_env: []
+python_dependencies: []

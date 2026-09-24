@@ -1,0 +1,40 @@
+name: Pages
+
+# Publishes the browser demo. It runs the real desktop/plugin.js against a
+# stand-in SDK; status data is live from codex-resets.com, everything else on
+# the page is simulated. Nothing here talks to a Hermes install.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}demo/
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r demo desktop _site/
+          printf '<!doctype html><meta http-equiv="refresh" content="0; url=demo/"><a href="demo/">Codex Resets demo</a>\n' > _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

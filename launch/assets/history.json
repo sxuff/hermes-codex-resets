@@ -1,0 +1,115 @@
+{
+  "capturedAt": "2026-09-23T19:52:57.919Z",
+  "total": 54,
+  "avg": 7,
+  "rows": [
+    {
+      "id": "2102463847714247142",
+      "reset_type": "banked",
+      "announced_at": "2026-09-22T18:23:37.000Z",
+      "text": "GPT-6 Sol and Luna are out. Not only are they a very significant improvement across the board, but also in writing and general \"you know when you try it\" quality. \n\nWe are also permanently reducing the API price by 50% making both of them viable for a ton of new usecases and making your usage go further too, even on the subscriptions.\n\nAnd one more thing. We are loading a banked reset into all accounts of our Plus, Pro and Business users. Let's go!\n\nhttps://t.co/00DRh1sRrO",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2102463847714247142"
+      }
+    },
+    {
+      "id": "2098685367058612394",
+      "reset_type": "regular",
+      "announced_at": "2026-09-12T08:09:17.000Z",
+      "text": "Reset all propagated. Sweet dreams. https://t.co/VgKVUixoJG",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2098685367058612394"
+      }
+    },
+    {
+      "id": "observed-2097043464538264003",
+      "reset_type": "regular",
+      "announced_at": "2026-09-08T01:56:57.501Z",
+      "text": "All reset for everyone. Enjoy the week with Astra. https://t.co/WBM38JotGO",
+      "source": {
+        "type": "observed",
+        "url": "https://x.com/thsottiaux/status/2097174560412246215"
+      }
+    },
+    {
+      "id": "2096035437299237298",
+      "reset_type": "banked",
+      "announced_at": "2026-09-05T00:39:25.000Z",
+      "text": "Because we are beyond happy to have Astra rolled out today ahead of schedule and you have been super patient with us (not really, but it’s ok!)… we will do the full banked reset today too for all Plus, Pro and Business users. Lands end of day.\n\nHappy Astra day and enjoy a phenomenal weekend. \n\nPS: If you create the account or upgrade before 8pm PT you will get it too. Still time!",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2096035437299237298"
+      }
+    },
+    {
+      "id": "2095651088502591861",
+      "reset_type": "banked",
+      "announced_at": "2026-09-03T23:12:09.000Z",
+      "text": "We will give one banked reset for every day you don't have access to Astra on your paid ChatGPT plan, starting today.  Team is moving mountains to give access as fast as we can.\n\nFirst one will land in ~ 3 hours. There is still time to create your account if you don't have one.",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2095651088502591861"
+      }
+    },
+    {
+      "id": "2094251180121854309",
+      "reset_type": "regular",
+      "announced_at": "2026-08-31T02:29:25.000Z",
+      "text": "What I wanted to say yesterday is that we hit 25M active users and to celebrate we have now reset usage for all paid subscriptions for ChatGPT Work and Codex.\n\nSee you see for more news from The Reset Company. https://t.co/7Yc5znAJIc",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2094251180121854309"
+      }
+    },
+    {
+      "id": "2093801758665715784",
+      "reset_type": "regular",
+      "announced_at": "2026-08-29T20:43:34.000Z",
+      "text": "We are reseting usage for all paid users of Codex and ChatGPT Work.\n\nPlease continue reading for an update on Codex usage limits. The team has been working around the clock, going through thousands of reports and shipping fixes.\n\nDepending on how you use Codex, you should see your usage go between 10% and 50% further than before.\n\nWe really went with a fine comb, with many uncovered small things being longstanding and here is what we found and fixed:\n- Compaction. We were keeping old images during compaction, sometimes making the context large enough to trigger compaction again. After the fix, usage dropped around 10% for users making heavy use of images. Fixed.\n- Memory. Background memory workers could inherit Stop hooks and keep running when the hook wouldn’t let them finish. This affected fewer than 1% of users, with the long tail being pretty bad and we saw one example thread check whether it could stop 15,000 times. Fixed.\n- Goals. In some cases, a set /goal could finish and then keep going past the intended stop condition, or the model would keep retrying broken tools without stopping. We saw examples consume anywhere from 15% to 70% of a weekly allowance. Fixed.\n- Automations. Some custom schedules could run more frequently than configured. Fixed.\n- Subagents. Smaller models (e.g. Luna) sometimes picked more capable helpers without being explicitly asked. The same was true where the orchestrating model not running in /fast mode could request sub-agents to run /fast. Fixed.\n- Computer History. The older implementation could lead to repeatedly summarizing overlapping activity. For some cases we saw it consume up to one fifth of the weekly usage per week. Fixed.\n- Rolling task summaries. Ordinary turns were triggering extra background requests. These added about 1% to token usage. Small each time, but it adds up. We have disabled this.\n- MCP. Some tool results could be encoded twice. We also found tool instructions getting cut off and fetched again. Fixed.\n\nWe’ve also made architectural changes to prevent these from regressing and our teams will get paged if it happens regardless. We are also working on showing you directly in the app where your usage goes so you don’t have to guess.\n\nGoes without saying that we’re resetting usage limits and I hope you enjoy a very nice Saturday!",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2093801758665715784"
+      }
+    },
+    {
+      "id": "2093014447833116908",
+      "reset_type": "regular",
+      "announced_at": "2026-08-27T16:35:05.000Z",
+      "text": "Never slept better and feeling reseted. Brand new me and brand new usage for all ChatGPT Work and Codex users. Regaining my youth one button press at a time.\n\nHappy Thursday",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2093014447833116908"
+      }
+    },
+    {
+      "id": "observed-20260825T143200Z",
+      "reset_type": "regular",
+      "announced_at": "2026-08-25T14:30:00.000Z",
+      "text": "@dtzy_88 Ah yeah, forgot to say",
+      "source": {
+        "type": "observed",
+        "url": "https://x.com/thsottiaux/status/2092311059197808936"
+      }
+    },
+    {
+      "id": "2091688655828246890",
+      "reset_type": "regular",
+      "announced_at": "2026-08-24T00:46:51.000Z",
+      "text": "Good Sunday. Reset has been propagated to accounts and we landed some fixes to usage for things mentioned yesterday as issues we found. You should feel a positive difference. More to come tomorrow and will keep communicating. https://t.co/6mgUetJnhg",
+      "source": {
+        "type": "x_post",
+        "author": "thsottiaux",
+        "url": "https://x.com/thsottiaux/status/2091688655828246890"
+      }
+    }
+  ]
+}

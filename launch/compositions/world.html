@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Antonio"; font-weight: 200; src: url("assets/fonts/antonio-200.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 500; src: url("assets/fonts/barlow-condensed-500.woff2") format("woff2"); }
+        #world-root { position: absolute; inset: 0; overflow: hidden; background: #0f0c0b; font-family: Inter, sans-serif; }
+        #world { position: absolute; inset: 0; transform-origin: 50% 50%; }
+        .w-titlebar { position: absolute; left: 0; right: 0; top: 0; height: 52px; display: flex; align-items: center; gap: 14px; padding: 0 28px; border-bottom: 1px solid #2a2220; color: #8f857d; font: 400 19px Inter, sans-serif; }
+        .w-titlebar b { color: #e9e4df; font-weight: 700; }
+        .w-titlebar .dots { margin-left: auto; display: flex; gap: 10px; }
+        .w-titlebar .dots i { display: block; width: 13px; height: 13px; border-radius: 50%; background: #3a302c; }
+        .w-sidebar { position: absolute; left: 0; top: 52px; bottom: 48px; width: 420px; padding: 28px 22px; border-right: 1px solid #2a2220; background: #141010; display: flex; flex-direction: column; gap: 6px; }
+        .w-sidebar h6 { margin: 0 12px 14px; color: #8f857d; font: 700 15px Inter, sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+        .w-sess { padding: 14px 16px; border-radius: 8px; color: #a39a93; font: 400 21px Inter, sans-serif; }
+        .w-sess.on { background: #221a17; color: #e9e4df; }
+        .w-sess small { display: block; margin-top: 4px; color: #cdc5bf; font-size: 16px; }
+        .w-chat { position: absolute; left: 480px; right: 40px; top: 96px; display: flex; flex-direction: column; gap: 30px; }
+        .w-bubble { align-self: flex-end; max-width: 820px; padding: 16px 22px; border-radius: 14px; background: #221a17; color: #e9e4df; font: 400 24px/1.4 Inter, sans-serif; }
+        .w-answer { max-width: 1180px; color: #cfc6bf; font: 400 24px/1.6 Inter, sans-serif; }
+        .w-answer code { padding: 2px 8px; border-radius: 6px; background: #221a17; color: #e9e4df; font: 400 21px "IBM Plex Mono", monospace; }
+        .w-tool { display: flex; gap: 14px; align-items: center; color: #a39a93; font: 400 20px "IBM Plex Mono", monospace; }
+        .w-tool b { color: #7fb98a; font-weight: 400; }
+        .w-composer { position: absolute; left: 480px; right: 40px; top: 902px; height: 102px; padding: 22px 26px; border: 1px solid #3a302c; border-radius: 14px; background: #171210; color: #e9e4df; font: 400 24px Inter, sans-serif; }
+        .w-composer .ph { color: #8f857d; }
+        .w-composer .caret { display: inline-block; width: 2px; height: 28px; margin-left: 2px; vertical-align: -5px; background: #e9e4df; }
+        .w-status { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; border-top: 1px solid #2a2220; background: #171210; color: #a39a93; font: 400 18px Inter, sans-serif; }
+        .w-status .left { position: absolute; left: 24px; top: 0; bottom: 0; display: flex; align-items: center; gap: 26px; }
+        .w-status .right { position: absolute; right: 22px; top: 0; bottom: 0; width: 150px; display: flex; align-items: center; justify-content: flex-end; gap: 18px; }
+        .w-chip { position: absolute; right: 190px; top: 9px; height: 30px; display: flex; align-items: center; gap: 9px; padding: 0 11px; border-radius: 4px; overflow: hidden; color: #a39a93; font: 500 19px Inter, sans-serif; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+        .w-chip.open { overflow: visible; }
+        .w-chip .ring { position: absolute; inset: -4px -7px; display: block; border: 3px solid #f2f200; border-radius: 7px; }
+        .w-chip .mark { position: relative; display: block; width: 10px; height: 10px; background: currentColor; }
+        .w-chip span { position: relative; }
+        .w-chip.fresh { background: #f2f200; color: #0000f2; }
+        .w-chip .sweep { position: absolute; inset: 0; display: block; background: #f2f200; transform-origin: 0 50%; }
+
+        /* The plugin's card at 1.5x of the real 360x190. */
+        .w-card { position: absolute; left: 1190px; top: 738px; width: 540px; height: 285px; overflow: hidden; background: #0000f2; color: #f2f2f2; box-shadow: 0 18px 48px rgba(0, 0, 30, .5); transform-origin: 100% 100%; }
+        .w-card .dither { position: absolute; inset: 0; background: url("assets/wing-idle.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; }
+        .w-card .dither.flare { background-image: url("assets/wing-flare.png"); }
+        .w-card .top { position: absolute; left: 18px; right: 18px; top: 15px; font: 500 16px "Barlow Condensed", sans-serif; letter-spacing: 1.8px; text-transform: uppercase; }
+        .w-card .q { position: absolute; left: 18px; top: 46px; max-width: 62%; font: 400 16px/1.5 "IBM Plex Mono", monospace; }
+        .w-card .q span { padding: 1px 6px; background: #0000f2; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+        .w-card .flood { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: #f2f200; color: #0000f2; }
+        .w-card.banked .flood { background: #00f2f2; }
+        .w-card .word { position: absolute; left: 12px; bottom: 46px; display: flex; font: 200 102px/.8 Antonio, sans-serif; letter-spacing: -3px; }
+        .w-card .word span { display: block; transform-origin: 50% 100%; }
+        .w-card .frow { position: absolute; left: 18px; right: 18px; bottom: 11px; display: flex; justify-content: space-between; font: 400 15px "IBM Plex Mono", monospace; letter-spacing: .8px; text-transform: uppercase; }
+      </style>
+
+      <div data-hf-id="hf-oevd" id="world-root" data-composition-id="world-scene" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-k6zw" id="world" data-layout-allow-overflow="">
+          <div data-hf-id="hf-eofh" class="w-titlebar"><b data-hf-id="hf-6w8z">Hermes</b><span data-hf-id="hf-5ugq">· overlay-renderer</span><span data-hf-id="hf-r6mh" class="dots"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i></span></div>
+          <div data-hf-id="hf-llus" class="w-sidebar">
+            <h6 data-hf-id="hf-ewei">Sessions</h6>
+            <div data-hf-id="hf-xdpq" class="w-sess on">Refactor overlay renderer<small data-hf-id="hf-me7w">now</small></div>
+            <div data-hf-id="hf-tstc" class="w-sess">Release notes 0.4<small data-hf-id="hf-zo66">2h</small></div>
+            <div data-hf-id="hf-rocj" class="w-sess">Shader pass perf<small data-hf-id="hf-0b1k">yesterday</small></div>
+            <div data-hf-id="hf-o8nu" class="w-sess">Inbox triage<small data-hf-id="hf-6ew0">yesterday</small></div>
+            <div data-hf-id="hf-87jh" class="w-sess">Weekly report<small data-hf-id="hf-shpf">3d</small></div>
+          </div>
+          <div data-hf-id="hf-f34q" class="w-chat">
+            <div data-hf-id="hf-reca" class="w-bubble">Refactor the overlay renderer so it batches draw calls.</div>
+            <div data-hf-id="hf-5zcx" class="w-answer">I split <code data-hf-id="hf-twf2">renderFrame()</code> into a collect pass and a flush pass, so each layer issues one draw call instead of one per sprite. Frame time went from 9.1 ms to 3.4 ms on the replay fixture.</div>
+            <div data-hf-id="hf-ueqh" class="w-tool" id="w-tool"><b data-hf-id="hf-gl6q">✓</b> npm test · 214 passed</div>
+          </div>
+          <div data-hf-id="hf-sl3q" class="w-composer"><span data-hf-id="hf-z1nw" class="ph" id="w-ph">Ask Hermes…</span><span data-hf-id="hf-5ney" id="w-typed"></span><i data-hf-id="hf-hlq8" class="caret" id="w-caret"></i></div>
+          <div data-hf-id="hf-w2ae" class="w-status">
+            <div data-hf-id="hf-i0dv" class="left"><span data-hf-id="hf-8f1x">⌂ saida</span><span data-hf-id="hf-4res">main</span></div>
+            <div data-hf-id="hf-hqc1" class="w-chip open" id="w-chip-idle"><i data-hf-id="hf-bmty" class="ring" id="w-ring"></i><i data-hf-id="hf-botj" class="mark"></i><span data-hf-id="hf-3h8r">Codex · 1D 01H</span></div>
+            <div data-hf-id="hf-07h5" class="w-chip fresh" id="w-chip-fresh"><i data-hf-id="hf-10qv" class="mark"></i><span data-hf-id="hf-4xib">Reset · fresh limits</span></div>
+            <div data-hf-id="hf-8qzy" class="w-chip fresh" id="w-chip-banked"><i data-hf-id="hf-0mfu" class="mark"></i><span data-hf-id="hf-mdr8">Banked reset · +1</span></div>
+            <div data-hf-id="hf-ql7q" class="w-chip" id="w-chip-pulse"><i data-hf-id="hf-orai" class="sweep" id="w-sweep"></i><i data-hf-id="hf-084t" class="mark"></i><span data-hf-id="hf-y5fb">Reset · limits back to 100%</span></div>
+            <div data-hf-id="hf-8dr2" class="right"><span data-hf-id="hf-4ku7">RAM 12G</span><span data-hf-id="hf-42ye">v0.21</span></div>
+          </div>
+
+          <div data-hf-id="hf-998w" class="w-card" id="w-card-a">
+            <div data-hf-id="hf-qr34" class="dither"></div>
+            <div data-hf-id="hf-l6dg" class="dither flare" id="w-flare-a"></div>
+            <div data-hf-id="hf-owwp" class="top">Incoming · @thsottiaux</div>
+            <div data-hf-id="hf-flqa" class="q" id="w-q-a"><span data-hf-id="hf-b22c">“Reset all propagated. Sweet dreams.” — @thsottiaux</span></div>
+            <div data-hf-id="hf-t7e8" class="flood" id="w-flood-a">
+              <div data-hf-id="hf-hacs" class="word" id="w-word-a"><span data-hf-id="hf-f8cp">R</span><span data-hf-id="hf-l6y4">E</span><span data-hf-id="hf-fmnq">S</span><span data-hf-id="hf-16v8">E</span><span data-hf-id="hf-efqn">T</span></div>
+              <div data-hf-id="hf-ypm0" class="frow" id="w-frow-a"><span data-hf-id="hf-nj91">No. 055 · 09:14</span><span data-hf-id="hf-hoct">Limits back to 100%</span></div>
+            </div>
+          </div>
+
+          <div data-hf-id="hf-hwj6" class="w-card banked" id="w-card-b">
+            <div data-hf-id="hf-fdso" class="dither"></div>
+            <div data-hf-id="hf-tu9b" class="dither flare" id="w-flare-b"></div>
+            <div data-hf-id="hf-27ot" class="top">Incoming · @thsottiaux</div>
+            <div data-hf-id="hf-9g0h" class="q" id="w-q-b"><span data-hf-id="hf-hikw">“We are loading a banked reset into all accounts of our Plus,…” — @thsottiaux</span></div>
+            <div data-hf-id="hf-42vv" class="flood" id="w-flood-b">
+              <div data-hf-id="hf-s5uf" class="word" id="w-word-b"><span data-hf-id="hf-ll95">B</span><span data-hf-id="hf-ms68">A</span><span data-hf-id="hf-gtkt">N</span><span data-hf-id="hf-it3y">K</span><span data-hf-id="hf-zzy5">E</span><span data-hf-id="hf-ksn3">D</span></div>
+              <div data-hf-id="hf-7dhv" class="frow" id="w-frow-b"><span data-hf-id="hf-2595">No. 056 · 20:23</span><span data-hf-id="hf-qrhx">+1 reset stored</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          const $ = s => document.querySelector(s);
+
+          // Camera (viewport-change): one #world, T = -offset × S. Shots anchor to the window's
+          // bottom-right corner so the frame never shows past its edge: x = 960 - 960S, y = 540 - 540S.
+          const world = $("#world");
+          const cam = { scale: 1, x: 0, y: 0 };
+          const applyCamera = () => { world.style.transform = `translate(${cam.x}px, ${cam.y}px) scale(${cam.scale})`; };
+          const cornerShot = s => ({ scale: s, x: 960 - 960 * s, y: 540 - 540 * s });
+          applyCamera();
+          tl.fromTo(cam, { scale: 1, x: 0, y: 0 }, { ...cornerShot(1.6), duration: 1.4, ease: "power3.inOut", onUpdate: applyCamera }, 1.2);
+          // Slow drift while the cards hold, still anchored to the corner so no edge shows.
+          tl.to(cam, { ...cornerShot(1.64), duration: 5.3, ease: "sine.inOut", onUpdate: applyCamera, immediateRender: false }, 4.6);
+          // Typing shot: frame the composer's left edge and the chip, with the top just below the conversation.
+          tl.to(cam, { scale: 1.45, x: -224, y: 540 - 540 * 1.45, duration: 1.0, ease: "power3.inOut", onUpdate: applyCamera, immediateRender: false }, 10.0);
+
+          // Focus ring on the chip before the first reset.
+          tl.set("#w-ring", { opacity: 0 }, 0);
+          tl.fromTo("#w-ring", { opacity: 0, scale: 1.35 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out", immediateRender: false }, 2.75);
+          tl.to("#w-ring", { scale: 1.12, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, 3.1);
+          tl.to("#w-ring", { opacity: 0, duration: 0.15 }, 3.85);
+          tl.fromTo("#w-tool", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, 0.6);
+
+          // Chip states: opacity toggles are seek-safe.
+          const chips = ["#w-chip-idle", "#w-chip-fresh", "#w-chip-banked", "#w-chip-pulse"];
+          const showChip = (sel, t) => chips.forEach(c => tl.set(c, { opacity: c === sel ? 1 : 0 }, t));
+          showChip("#w-chip-idle", 0);
+          showChip("#w-chip-fresh", 3.9);
+          showChip("#w-chip-banked", 7.4);
+          showChip("#w-chip-idle", 10.0);
+
+          // A reset lands: the card rises out of the chip, the wing flares, the flood rises, the letters stand up.
+          const reset = (id, t0, hold) => {
+            const c = `#w-card-${id}`;
+            tl.set(c, { opacity: 0, scale: 0.88, y: 18 }, 0);
+            tl.set([`#w-flare-${id}`, `#w-q-${id}`, `#w-frow-${id}`], { opacity: 0 }, 0);
+            tl.set(`#w-flood-${id}`, { clipPath: "inset(100% 0% 0% 0%)" }, 0);
+            tl.set(`#w-word-${id} span`, { scaleY: 0 }, 0);
+            tl.to(c, { opacity: 1, scale: 1, y: 0, duration: 0.34, ease: "back.out(1.4)" }, t0);
+            tl.to(`#w-flare-${id}`, { opacity: 1, duration: 0.8, ease: "power2.out" }, t0 + 0.05);
+            tl.to(`#w-q-${id}`, { opacity: 1, duration: 0.35, ease: "power1.out" }, t0 + 0.45);
+            tl.to(`#w-flood-${id}`, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power4.inOut" }, t0 + 0.3);
+            tl.to(`#w-word-${id} span`, { scaleY: 1, duration: 0.5, ease: "expo.out", stagger: 0.06 }, t0 + 0.6);
+            tl.to(`#w-frow-${id}`, { opacity: 1, duration: 0.3 }, t0 + 0.85);
+            tl.to(c, { opacity: 0, scale: 0.9, y: 14, duration: 0.3, ease: "power2.in" }, t0 + hold);
+          };
+          reset("a", 3.9, 3.0);
+          reset("b", 7.4, 2.3);
+
+          // Typing: only the chip reacts.
+          const text = "Also batch the shadow pass so it";
+          const typed = $("#w-typed"), ph = $("#w-ph");
+          const typing = { n: 0 };
+          tl.fromTo(typing, { n: 0 }, {
+            n: text.length, duration: 1.2, ease: "none",
+            onUpdate: () => { const k = Math.round(typing.n); typed.textContent = text.slice(0, k); ph.style.display = k ? "none" : "inline"; }
+          }, 10.55);
+          tl.fromTo("#w-caret", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(1)", repeat: 3, yoyo: true }, 11.8);
+          showChip("#w-chip-pulse", 11.75);
+          tl.fromTo("#w-sweep", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 11.75);
+          tl.fromTo("#w-chip-pulse", { color: "#a39a93" }, { color: "#0000f2", duration: 0.2 }, 11.95);
+
+          window.__timelines["world-scene"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

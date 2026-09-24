@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Antonio"; font-weight: 200; src: url("assets/fonts/antonio-200.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 500; src: url("assets/fonts/barlow-condensed-500.woff2") format("woff2"); }
+        #endcard-root { position: absolute; inset: 0; overflow: hidden; background: #0000f2; color: #f2f2f2; }
+        .e-dither { position: absolute; inset: 0; background: url("assets/wing-idle.png") 50% 50% / cover no-repeat; image-rendering: pixelated; }
+        .e-kick { position: absolute; left: 120px; top: 92px; font: 500 34px "Barlow Condensed", sans-serif; letter-spacing: 3px; text-transform: uppercase; }
+        .e-title { position: absolute; left: 110px; top: 196px; display: flex; font: 200 260px/.86 Antonio, sans-serif; letter-spacing: -6px; }
+        .e-title span { display: block; transform-origin: 50% 100%; }
+        .e-title .sp { width: 70px; }
+        .e-flood { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: #f2f200; color: #0000f2; }
+        .e-install { position: absolute; left: 120px; top: 92px; font: 400 48px "IBM Plex Mono", monospace; letter-spacing: -.5px; }
+        .e-install b { font-weight: 400; }
+        .e-credit { position: absolute; left: 120px; bottom: 76px; font: 400 26px "IBM Plex Mono", monospace; }
+      </style>
+
+      <div data-hf-id="hf-8zhg" id="endcard-root" data-composition-id="endcard" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-v4zy" class="e-dither"></div>
+        <div data-hf-id="hf-x9h7" class="e-kick" id="e-kick">Hermes Desktop plugin</div>
+        <div data-hf-id="hf-adki" class="e-title" id="e-title"><span data-hf-id="hf-lzk6">C</span><span data-hf-id="hf-h7vu">O</span><span data-hf-id="hf-ksn3">D</span><span data-hf-id="hf-l6y4">E</span><span data-hf-id="hf-cuij">X</span><span data-hf-id="hf-uym4" class="sp"></span><span data-hf-id="hf-f8cp">R</span><span data-hf-id="hf-16v8">E</span><span data-hf-id="hf-fmnq">S</span><span data-hf-id="hf-zzy5">E</span><span data-hf-id="hf-efqn">T</span><span data-hf-id="hf-wgd6">S</span></div>
+        <div data-hf-id="hf-jhvm" class="e-flood" id="e-flood">
+          <div data-hf-id="hf-ha77" class="e-install" id="e-install"><b data-hf-id="hf-0ogj">$</b> hermes plugins install sxuff/hermes-codex-resets</div>
+          
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#e-kick", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.2);
+          tl.fromTo("#e-title span", { scaleY: 0 }, { scaleY: 1, duration: 0.55, ease: "expo.out", stagger: 0.04 }, 0.25);
+          tl.fromTo("#e-flood", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "power4.inOut" }, 0.6);
+          tl.fromTo("#e-install", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.95);
+          
+          tl.fromTo(".e-dither", { scale: 1 }, { scale: 1.06, duration: 2.85, ease: "sine.inOut" }, 0);
+          tl.fromTo("#e-title", { x: 0 }, { x: 14, duration: 2.0, ease: "sine.inOut" }, 0.85);
+          window.__timelines["endcard"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

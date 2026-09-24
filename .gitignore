@@ -1,0 +1,15 @@
+node_modules/
+*.log
+.DS_Store
+
+# Launch-video working files, previews, and renders.
+launch/renders/
+launch/snapshots/
+launch/node_modules/
+launch/.hyperframes/
+launch/.thumbnails/
+launch/.media/
+launch/.check.txt
+
+# Editor and assistant configs are per-machine.
+.claude/

@@ -1,0 +1,16 @@
+{
+  "name": "hermes-codex-resets",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Codex usage-limit resets in the Hermes Desktop status bar.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-plugin.mjs",
+    "demo": "node scripts/serve.mjs",
+    "capture": "node scripts/capture.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

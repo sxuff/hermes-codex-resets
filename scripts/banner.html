@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Codex Resets banner</title>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@200&family=Barlow+Condensed:wght@500&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; }
+  body { position: relative; width: 1200px; height: 600px; overflow: hidden; background: #0000f2; color: #f2f2f2; font-family: "Barlow Condensed", sans-serif; }
+  canvas { position: absolute; inset: 0; width: 1200px; height: 600px; image-rendering: pixelated; }
+  .left { position: absolute; left: 64px; top: 60px; bottom: 58px; display: flex; flex-direction: column; }
+  .kicker { font: 500 15px "Barlow Condensed", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+  .title { margin-top: 22px; font: 200 164px/.94 "Antonio", sans-serif; letter-spacing: -4px; text-transform: uppercase; }
+  .sub { margin-top: auto; max-width: 470px; font: 400 17px/1.5 "IBM Plex Mono", monospace; }
+  .credit { margin-top: 14px; font: 400 12px "IBM Plex Mono", monospace; opacity: .7; }
+  .card { position: absolute; right: 64px; top: 120px; width: 520px; box-shadow: 0 24px 60px rgba(0, 0, 30, .55); }
+  .bar { position: absolute; right: 64px; top: 412px; width: 520px; height: 30px; display: flex; justify-content: flex-end; align-items: center; gap: 14px; padding: 0 10px; box-sizing: border-box; background: #120d0a; font: 500 12px "Barlow Condensed", sans-serif; letter-spacing: 1px; text-transform: uppercase; color: #8d8680; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 3px 8px; background: #f2f200; color: #0000f2; }
+  .chip i { width: 8px; height: 8px; background: #0000f2; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="left">
+  <div class="kicker">Hermes Desktop plugin</div>
+  <div class="title">Codex<br>Resets</div>
+  <div class="sub">Know the moment OpenAI resets your Codex limits. It lives in the status bar and stays quiet until it counts.</div>
+  <div class="credit">Data from codex-resets.com</div>
+</div>
+<img class="card" src="../artifacts/card-reset.png" alt="">
+<div class="bar"><span>opus · main</span><span class="chip"><i></i>Reset · fresh limits</span></div>
+<script>
+  // Same Bayer-dithered blue-on-blue grain as the plugin's card.
+  const c = document.getElementById('c'), CELL = 3, W = 1200 / CELL, H = 600 / CELL
+  c.width = W; c.height = H
+  const g = c.getContext('2d'), img = g.createImageData(W, H), B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const d = Math.hypot((x - W * .72) / W, (y - H * .45) / H * .6)
+    const l = Math.max(0, .42 - d * .9) + (Math.random() - .5) * .16
+    const t = (B[(y & 3) * 4 + (x & 3)] + .5) / 16, v = l * 2
+    const col = v > 1 + t ? [105, 105, 248] : v > t ? [38, 38, 246] : [0, 0, 242]
+    const i = (y * W + x) * 4
+    img.data[i] = col[0]; img.data[i + 1] = col[1]; img.data[i + 2] = col[2]; img.data[i + 3] = 255
+  }
+  g.putImageData(img, 0, 0)
+</script>
+</body>
+</html>

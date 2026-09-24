@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex Resets demo</title>
+<meta name="description" content="Try the Codex Resets Hermes Desktop plugin in your browser: live data, simulated resets.">
+<script type="importmap">
+{ "imports": {
+  "react": "https://esm.sh/react@18.3.1",
+  "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime?external=react",
+  "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+  "@hermes/plugin-sdk": "./mock-sdk.js"
+} }
+</script>
+<style>
+  :root {
+    --ui-bg: #111114; --ui-panel: #17171b; --ui-text-primary: #ecebe6; --ui-text-secondary: #b9b8b3; --ui-text-tertiary: #85848d; --ui-text-quaternary: #5d5c64;
+    --ui-stroke-secondary: #2a2a30; --ui-accent: #7b8cff;
+  }
+  * { box-sizing: border-box; }
+  html, body, #app { height: 100%; margin: 0; }
+  body { background: var(--ui-bg); color: var(--ui-text-primary); font: 14px/1.5 system-ui, "Segoe UI", sans-serif; }
+  .win { height: 100%; display: grid; grid-template-rows: 34px 1fr 24px; grid-template-columns: 232px 1fr; }
+  .title { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-bottom: 1px solid var(--ui-stroke-secondary); color: var(--ui-text-tertiary); font-size: 12px; }
+  .title b { color: var(--ui-text-primary); font-weight: 600; }
+  .side { border-right: 1px solid var(--ui-stroke-secondary); background: var(--ui-panel); padding: 10px 8px; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+  .nav { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 0; border-radius: 6px; background: none; color: var(--ui-text-secondary); font: inherit; text-align: left; cursor: pointer; }
+  .nav.on, .nav:hover { background: #22222a; color: var(--ui-text-primary); }
+  .dev { margin-top: 16px; padding: 10px; border: 1px dashed #3a3a44; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: var(--ui-text-tertiary); }
+  .dev h4 { margin: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ui-text-quaternary); }
+  .dev label { display: flex; align-items: center; gap: 8px; color: var(--ui-text-secondary); cursor: pointer; }
+  .dev button, .dev select { font: inherit; font-size: 12px; color: var(--ui-text-primary); background: #22222a; border: 1px solid #33333c; border-radius: 6px; padding: 5px 8px; cursor: pointer; text-align: left; }
+  .dev button:hover { background: #2a2a34; }
+  .main { position: relative; overflow: hidden; }
+  .chat { height: 100%; display: flex; flex-direction: column; }
+  .msgs { flex: 1; overflow: auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 16px; max-width: 820px; }
+  .msg { color: var(--ui-text-secondary); }
+  .msg.me { align-self: flex-end; background: #22222a; padding: 8px 12px; border-radius: 10px; color: var(--ui-text-primary); }
+  .msg code { background: #22222a; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+  .busy { color: var(--ui-accent); font-size: 12px; }
+  .composer { margin: 0 24px 16px; }
+  .composer textarea { width: 100%; height: 72px; resize: none; background: var(--ui-panel); border: 1px solid var(--ui-stroke-secondary); border-radius: 10px; color: var(--ui-text-primary); font: inherit; padding: 10px 12px; }
+  .status { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; border-top: 1px solid var(--ui-stroke-secondary); background: var(--ui-panel); color: var(--ui-text-tertiary); font-size: 11px; }
+  .status .r { display: flex; align-items: center; gap: 10px; }
+  .toasts { position: fixed; right: 16px; bottom: 36px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+  .toast { width: 300px; background: #22222a; border: 1px solid #33333c; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; }
+  .toast b { display: block; font-size: 11px; color: var(--ui-text-tertiary); font-weight: 500; }
+  .osn { position: fixed; right: 16px; bottom: 36px; width: 340px; background: #202020; border: 1px solid #3a3a3a; border-radius: 8px; padding: 10px 12px; font: 12.5px "Segoe UI", system-ui, sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,.5); z-index: 11; }
+  .osn small { display: block; color: #9a9a9a; font-size: 11px; margin-bottom: 4px; }
+  .osn b { display: block; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createRoot } from 'react-dom/client'
+import { useState } from 'react'
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime'
+import { host, useValue, createContext, $contribs, $route, $toasts, $osNotes, STATUSBAR_AREAS, ROUTES_AREA, SIDEBAR_NAV_AREA, PALETTE_AREA } from './mock-sdk.js'
+
+// ---- simulation hooks (harness only) ----
+const sim = { scenario: 'live', landed: null, away: false }
+Object.defineProperty(document, 'hidden', { configurable: true, get: () => sim.away })
+document.hasFocus = () => !sim.away
+
+const TEXT = {
+  regular: 'Reset all propagated. Sweet dreams.',
+  banked: 'GPT-6 Sol and Luna are out. Not only are they a very significant improvement across the board, but also in writing and general "you know when you try it" quality.\n\nWe are also permanently reducing the API price by 50% making both of them viable for a ton of new usecases and making your usage go further too, even on the subscriptions.\n\nAnd one more thing. We are loading a banked reset into all accounts of our Plus, Pro and Business users. Let\'s go!'
+}
+const WATCH_SEEN = Date.now() - 36e5
+const realFetch = window.fetch.bind(window)
+window.fetch = async (url, opts) => {
+  if (!String(url).startsWith('https://codex-resets.com/api/v1/status')) return realFetch(url, opts)
+  const json = await (await realFetch(url, opts)).json()
+  const d = json.data, now = Date.now(), iso = t => new Date(t).toISOString()
+  if (sim.landed) { d.latest_reset = sim.landed; d.stats.total += 1 }
+  if (sim.scenario === 'watch') d.active_watch = { level: 'strong', reset_chance_percent: 62, forecast_window: 'next 24h', observed_at: iso(WATCH_SEEN), expires_at: iso(now + 864e5), text: 'Simulated', source: { type: 'observed' } }
+  if (sim.scenario === 'scheduled') d.scheduled_reset = { id: 'sim-sched', status: 'scheduled', reset_type: 'regular', announced_at: iso(now - 72e5), scheduled_for: iso(now + 5 * 36e5), text: 'Simulated', source: { type: 'observed' } }
+  if (sim.scenario === 'overdue' && !sim.landed) d.latest_reset = { ...d.latest_reset, announced_at: iso(now - 9.3 * 864e5) }
+  return new Response(JSON.stringify(json), { status: 200, headers: { 'content-type': 'application/json' } })
+}
+
+// ---- load the real plugin ----
+const plugin = (await import('../desktop/plugin.js')).default
+const ctx = createContext(plugin.id)
+// ?legacy mimics Hermes 0.21, whose ctx has no setTimeout / setInterval / addEventListener.
+if (new URLSearchParams(location.search).has('legacy')) { delete ctx.setTimeout; delete ctx.setInterval; delete ctx.addEventListener }
+plugin.register(ctx)
+const run = id => $contribs.get().find(c => c.data?.id === id)?.data.run()
+window.__cr = { sim, run, host }
+
+// ---- fake Hermes window ----
+function App() {
+  const contribs = useValue($contribs), route = useValue($route), toasts = useValue($toasts), notes = useValue($osNotes)
+  const busy = useValue(host.state.busy)
+  const [away, setAway] = useState(false)
+  const [scenario, setScenario] = useState('live')
+  const page = contribs.find(c => c.area === ROUTES_AREA && c.data.path === route)
+  const setAwayMode = v => { sim.away = v; setAway(v); if (!v) window.dispatchEvent(new Event('focus')) }
+  const land = type => {
+    sim.landed = { id: `sim-${Date.now()}`, reset_type: type, announced_at: new Date().toISOString(), text: TEXT[type], source: { type: 'x_post', author: 'thsottiaux', url: 'https://x.com/thsottiaux' } }
+    run('hermes-codex-resets.refresh')
+  }
+  return jsxs(Fragment, { children: [
+    jsxs('div', { className: 'win', children: [
+      jsxs('div', { className: 'title', children: [jsx('b', { children: 'Hermes' }), jsx('span', { children: '· Codex Resets demo. Live data from codex-resets.com; the window and the resets you land here are simulated.' })] }),
+      jsxs('div', { className: 'side', children: [
+        jsx('button', { className: 'nav' + (route === '/' ? ' on' : ''), onClick: () => host.navigate('/'), children: 'Chat' }),
+        ...contribs.filter(c => c.area === SIDEBAR_NAV_AREA).map(c => jsx('button', { className: 'nav' + (route === c.data.path ? ' on' : ''), onClick: () => host.navigate(c.data.path), children: c.data.label }, c.id)),
+        jsxs('div', { className: 'dev', children: [
+          jsx('h4', { children: 'Try it' }),
+          jsx('button', { onClick: () => { const t = document.querySelector('.composer textarea'); t.focus(); t.value = 'Also make the batching work for'; window.dispatchEvent(new KeyboardEvent('keydown', { key: 'r' })) }, children: 'Start typing in composer' }),
+          jsxs('label', { children: [jsx('input', { type: 'checkbox', checked: away, onChange: e => setAwayMode(e.target.checked) }), 'Hermes in background'] }),
+          jsxs('select', { value: scenario, onChange: e => { sim.scenario = e.target.value; setScenario(e.target.value); run('hermes-codex-resets.refresh') }, children: [
+            jsx('option', { value: 'live', children: 'Data: live' }),
+            jsx('option', { value: 'watch', children: 'Data: watch active' }),
+            jsx('option', { value: 'scheduled', children: 'Data: reset scheduled' }),
+            jsx('option', { value: 'overdue', children: 'Data: overdue' })
+          ] }),
+          jsx('button', { onClick: () => land('regular'), children: 'Land a regular reset' }),
+          jsx('button', { onClick: () => land('banked'), children: 'Land a banked reset' }),
+          jsx('button', { onClick: () => { sim.landed = null; localStorage.clear(); location.reload() }, children: 'Forget and reload' }),
+          jsx('h4', { children: 'Palette' }),
+          ...contribs.filter(c => c.area === PALETTE_AREA).map(c => jsx('button', { onClick: c.data.run, children: c.data.label }, c.id))
+        ] })
+      ] }),
+      jsx('div', { className: 'main', children: page ? page.render() : jsx(Chat, { busy }) }),
+      jsxs('div', { className: 'status', children: [
+        jsx('span', { children: 'gateway · open' }),
+        jsxs('span', { className: 'r', children: [
+          ...contribs.filter(c => c.area === STATUSBAR_AREAS.right).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map(c => jsx(Fragment, { children: c.render() }, c.id)),
+          jsx('span', { children: 'opus · main' })
+        ] })
+      ] })
+    ] }),
+    jsx('div', { className: 'toasts', children: toasts.map(t => jsxs('div', { className: 'toast', children: [jsx('b', { children: t.title || 'Hermes' }), t.message] }, t.id)) }),
+    ...notes.slice(-1).map(n => jsxs('div', { className: 'osn', onClick: () => $osNotes.set([]), children: [jsx('small', { children: 'Windows notification (simulated) · Hermes' }), jsx('b', { children: n.title }), n.body] }, n.id))
+  ] })
+}
+
+function Chat({ busy }) {
+  return jsxs('div', { className: 'chat', children: [
+    jsxs('div', { className: 'msgs', children: [
+      jsx('div', { className: 'msg me', children: 'Refactor the overlay renderer so it batches draw calls.' }),
+      jsxs('div', { className: 'msg', children: ['I split ', jsx('code', { children: 'renderFrame()' }), ' into a collect pass and a flush pass, so each layer now issues one draw call instead of one per sprite. Tests pass; frame time went from 9.1 ms to 3.4 ms on the replay fixture.'] }),
+      busy ? jsx('div', { className: 'busy', children: 'Hermes is working…' }) : null
+    ] }),
+    jsx('div', { className: 'composer', children: jsx('textarea', { placeholder: 'Ask Hermes…' }) })
+  ] })
+}
+
+createRoot(document.getElementById('app')).render(jsx(App, {}))
+</script>
+</body>
+</html>
