@@ -98,6 +98,8 @@ npm run capture   # regenerates the screenshots and banner in artifacts/
 hermes plugins validate .
 ```
 
+Commit conventions and the release process are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 The plugin is one plain ES module, written without JSX or a build step, as Hermes loads desktop plugins. It imports only `@hermes/plugin-sdk`, `react` and `react/jsx-runtime`. `demo/mock-sdk.js` is a small stand-in for the SDK surface the plugin uses; it is not the real SDK. `demo/index.html?legacy` removes the context helpers that Hermes 0.21 lacks, to check the fallbacks.
 
 ## License
